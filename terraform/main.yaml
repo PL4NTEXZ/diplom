@@ -1,0 +1,15 @@
+#cloud-config
+users:
+  - name: sukhopalov
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCwGXXutmOkbnvLymJ/eco55sk9WESMhx/FFpZzumys8Osj6nQd1fP9QJ77bjVguGDKvZIaW/k4sIMQO7OdMV/MP8tsoZ+1KbEK6ip9401yk4Qxaly5ggaw6UZVmjijtPqdvkR2gkOQoREkfRS87ymM7DgvQ0pgyhGhn0IawfSJGfNs4kDNvsW8d8ewARxNpoN6sALDYYUuxzkGxTnmNPU7bo9HfKnnb5Ll20I2JOn3OPtLVsR0Vs9NOKkYhnQ2hsawvoUWnE79ir6/0ub8dXCsEAmbEZ1rqgjr5j1nWR55t3y5TGPmCCw8TBkTwUuVtRQ8eU4OiS+IafZ/GTjSNrr4qO+3FSlcLO9pIBKV4aYwZkIPjKpCM7Uz0FogMGYNstjQvpm7Uozc5RFiJ46Ddtf2VgZQl/WxbOEvb28LSoh28enoDOsdk3o9JJaiMXGqy5Ud6m5fttjluk+g8iC7g69cz17E6NeKweDAkQ9EAPDw4V2Vg0YOkwiLAD9izk0EIxU= pl4ntexz@PL4NTEXZ-LT
+
+disable_root: true
+timezone: Europe/Moscow
+repo_update: true
+repo_upgrade: true
+apt:
+  preserve_sources_list: true

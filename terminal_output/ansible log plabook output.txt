@@ -1,0 +1,269 @@
+pl4ntexz@PL4NTEXZ-LT:~/hw_sdn/nt-sys-dip/ansible$ ansible-playbook log-playbook.yml -i host.ini
+/usr/lib/python3/dist-packages/requests/__init__.py:87: RequestsDependencyWarning: urllib3 (1.26.5) or chardet (5.2.0) doesn't match a supported version!
+  warnings.warn("urllib3 ({}) or chardet ({}) doesn't match a supported "
+
+PLAY [elasticsearch] *****************************************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************************************************
+[WARNING]: Platform linux on host elasticsearch-host is using the discovered Python interpreter at /usr/bin/python3.10, but future installation
+of another Python interpreter could change the meaning of that path. See https://docs.ansible.com/ansible-
+core/2.17/reference_appendices/interpreter_discovery.html for more information.
+ok: [elasticsearch-host]
+
+TASK [elasticsearch : Update apt cache] **********************************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [elasticsearch : Install reqs for Docker] ***************************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [elasticsearch : Add the GPG key for Docker] ************************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [elasticsearch : Add the repository] ********************************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [elasticsearch : Update and install docker] *************************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [elasticsearch : Allow SSH through firewall (чтобы не потерять доступ)] *********************************************************************
+changed: [elasticsearch-host]
+
+TASK [elasticsearch : Allow Elasticsearch ports] *************************************************************************************************
+changed: [elasticsearch-host] => (item=9200)
+changed: [elasticsearch-host] => (item=9300)
+
+TASK [elasticsearch : Enable UFW] ****************************************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [elasticsearch : Install the Docker module for Python] **************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [elasticsearch : Create dir for data] *******************************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [elasticsearch : Create container] **********************************************************************************************************
+[DEPRECATION WARNING]: The container_default_behavior option will change its default value from "compatibility" to "no_defaults" in
+community.docker 2.0.0. To remove this warning, please specify an explicit value for it now. This feature will be removed from community.docker
+in version 2.0.0. Deprecation warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.
+changed: [elasticsearch-host]
+
+TASK [elasticsearch : Wait for Elasticsearch to become healthy] **********************************************************************************
+FAILED - RETRYING: [elasticsearch-host]: Wait for Elasticsearch to become healthy (10 retries left).
+FAILED - RETRYING: [elasticsearch-host]: Wait for Elasticsearch to become healthy (9 retries left).
+ok: [elasticsearch-host]
+
+TASK [elasticsearch : Check if Elasticsearch is running] *****************************************************************************************
+ok: [elasticsearch-host]
+
+TASK [elasticsearch : Verify container is running] ***********************************************************************************************
+ok: [elasticsearch-host] => {
+    "changed": false,
+    "msg": "Elasticsearch container is running successfully"
+}
+
+TASK [elasticsearch : Get container logs if health check failed] *********************************************************************************
+skipping: [elasticsearch-host]
+
+TASK [elasticsearch : Display container logs if there was an error] ******************************************************************************
+skipping: [elasticsearch-host]
+
+TASK [elasticsearch : docker container ls -a] ****************************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [elasticsearch : docker container ls -a result] *********************************************************************************************
+ok: [elasticsearch-host] => {
+    "msg": [
+        "CONTAINER ID   IMAGE                         COMMAND                  CREATED          STATUS          PORTS                                            NAMES",
+        "5c166dda23d0   bitnami/elasticsearch:8.6.2   \"/opt/bitnami/script…\"   37 seconds ago   Up 29 seconds   0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp   Elasticsearch"
+    ]
+}
+
+TASK [node_exporter : download node exporter] ****************************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [node_exporter : unarchive node exporter] ***************************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [node_exporter : move node exporter to /usr/local/bin] **************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [node_exporter : install unit file to systemd] **********************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [node_exporter : start node_exporter handlers] **********************************************************************************************
+
+RUNNING HANDLER [elasticsearch : docker systemd] *************************************************************************************************
+ok: [elasticsearch-host]
+
+RUNNING HANDLER [node_exporter : node exporter systemd] ******************************************************************************************
+changed: [elasticsearch-host]
+
+TASK [node_exporter : start node_exporter] *******************************************************************************************************
+ok: [elasticsearch-host]
+
+TASK [node_exporter : Return service state information as fact data] *****************************************************************************
+ok: [elasticsearch-host]
+
+TASK [node_exporter : Show the status of node_exporter service] **********************************************************************************
+ok: [elasticsearch-host] => {
+    "ansible_facts.services['node_exporter.service']['state']": "running"
+}
+
+PLAY [kibana] ************************************************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************************************************
+[WARNING]: Platform linux on host kibana-host is using the discovered Python interpreter at /usr/bin/python3.10, but future installation of
+another Python interpreter could change the meaning of that path. See https://docs.ansible.com/ansible-
+core/2.17/reference_appendices/interpreter_discovery.html for more information.
+ok: [kibana-host]
+
+TASK [kibana : Update apt cache] *****************************************************************************************************************
+changed: [kibana-host]
+
+TASK [kibana : Install reqs for Docker] **********************************************************************************************************
+changed: [kibana-host]
+
+TASK [kibana : Add the GPG key for Docker] *******************************************************************************************************
+changed: [kibana-host]
+
+TASK [kibana : Add the repository] ***************************************************************************************************************
+changed: [kibana-host]
+
+TASK [kibana : Update and install docker] ********************************************************************************************************
+changed: [kibana-host]
+
+TASK [kibana : Install the Docker module for Python] *********************************************************************************************
+changed: [kibana-host]
+
+TASK [kibana : Wait for Elasticsearch to be ready] ***********************************************************************************************
+ok: [kibana-host]
+
+TASK [kibana : Create container] *****************************************************************************************************************
+changed: [kibana-host]
+
+TASK [kibana : docker container ls -a] ***********************************************************************************************************
+changed: [kibana-host]
+
+TASK [kibana : docker container ls -a result] ****************************************************************************************************
+ok: [kibana-host] => {
+    "msg": [
+        "CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS        PORTS                    NAMES",
+        "df1867377df5   kibana:8.6.2   \"/bin/tini -- /usr/l…\"   13 seconds ago   Up 1 second   0.0.0.0:5601->5601/tcp   Kibana"
+    ]
+}
+
+TASK [kibana : Wait for Kibana to start (can take 1-2 mins)] *************************************************************************************
+FAILED - RETRYING: [kibana-host]: Wait for Kibana to start (can take 1-2 mins) (12 retries left).
+FAILED - RETRYING: [kibana-host]: Wait for Kibana to start (can take 1-2 mins) (11 retries left).
+ok: [kibana-host]
+
+TASK [kibana : Check Kibana logs if still not ready] *********************************************************************************************
+changed: [kibana-host]
+
+TASK [kibana : Show Kibana logs] *****************************************************************************************************************
+ok: [kibana-host] => {
+    "kibana_logs.stdout_lines": [
+        "[2025-06-29T10:55:29.592+00:00][INFO ][node] Kibana process configured with roles: [background_tasks, ui]",
+        "[2025-06-29T10:55:38.435+00:00][INFO ][plugins-service] Plugin \"cloudChat\" is disabled.",
+        "[2025-06-29T10:55:38.436+00:00][INFO ][plugins-service] Plugin \"cloudExperiments\" is disabled.",
+        "[2025-06-29T10:55:38.436+00:00][INFO ][plugins-service] Plugin \"cloudFullStory\" is disabled.",
+        "[2025-06-29T10:55:38.436+00:00][INFO ][plugins-service] Plugin \"cloudGainsight\" is disabled.",
+        "[2025-06-29T10:55:38.442+00:00][INFO ][plugins-service] Plugin \"profiling\" is disabled.",
+        "[2025-06-29T10:55:38.515+00:00][INFO ][http.server.Preboot] http server running at http://0.0.0.0:5601",
+        "[2025-06-29T10:55:38.552+00:00][INFO ][plugins-system.preboot] Setting up [1] plugins: [interactiveSetup]",
+        "[2025-06-29T10:55:38.584+00:00][WARN ][config.deprecation] The default mechanism for Reporting privileges will work differently in future versions, which will affect the behavior of this cluster. Set \"xpack.reporting.roles.enabled\" to \"false\" to adopt the future behavior before upgrading.",
+        "[2025-06-29T10:55:38.777+00:00][INFO ][plugins-system.standard] Setting up [127] plugins: [translations,monitoringCollection,licensing,globalSearch,globalSearchProviders,features,mapsEms,licenseApiGuard,usageCollection,taskManager,cloud,guidedOnboarding,telemetryCollectionManager,telemetryCollectionXpack,kibanaUsageCollection,share,screenshotMode,banners,newsfeed,fieldFormats,expressions,screenshotting,dataViews,embeddable,uiActionsEnhanced,charts,esUiShared,customIntegrations,home,searchprofiler,painlessLab,grokdebugger,management,advancedSettings,spaces,security,snapshotRestore,lists,encryptedSavedObjects,telemetry,licenseManagement,files,eventLog,actions,notifications,console,bfetch,data,watcher,reporting,fileUpload,ingestPipelines,alerting,unifiedSearch,unifiedFieldList,savedSearch,savedObjects,graph,savedObjectsTagging,savedObjectsManagement,presentationUtil,expressionShape,expressionRevealImage,expressionRepeatImage,expressionMetric,expressionImage,controls,eventAnnotation,dataViewFieldEditor,triggersActionsUi,transform,stackConnectors,stackAlerts,ruleRegistry,discover,fleet,indexManagement,remoteClusters,crossClusterReplication,indexLifecycleManagement,cloudSecurityPosture,discoverEnhanced,visualizations,canvas,visTypeXy,visTypeVislib,visTypeVega,visTypeTimeseries,rollup,visTypeTimelion,visTypeTagcloud,visTypeTable,visTypeMetric,visTypeHeatmap,visTypeMarkdown,dashboard,dashboardEnhanced,expressionXY,expressionTagcloud,expressionPartitionVis,visTypePie,expressionMetricVis,expressionLegacyMetricVis,expressionHeatmap,expressionGauge,lens,maps,dataVisualizer,cases,timelines,sessionView,kubernetesSecurity,threatIntelligence,osquery,observability,aiops,ml,synthetics,securitySolution,infra,upgradeAssistant,monitoring,logstash,enterpriseSearch,apm,visTypeGauge,dataViewManagement]",
+        "[2025-06-29T10:55:38.791+00:00][INFO ][plugins.taskManager] TaskManager is identified by the Kibana UUID: 77305aef-2258-42d3-a6bf-a991f0237836",
+        "[2025-06-29T10:55:38.858+00:00][WARN ][plugins.security.config] Generating a random key for xpack.security.encryptionKey. To prevent sessions from being invalidated on restart, please set xpack.security.encryptionKey in the kibana.yml or use the bin/kibana-encryption-keys command.",
+        "[2025-06-29T10:55:38.858+00:00][WARN ][plugins.security.config] Session cookies will be transmitted over insecure connections. This is not recommended.",
+        "[2025-06-29T10:55:38.879+00:00][WARN ][plugins.security.config] Generating a random key for xpack.security.encryptionKey. To prevent sessions from being invalidated on restart, please set xpack.security.encryptionKey in the kibana.yml or use the bin/kibana-encryption-keys command.",
+        "[2025-06-29T10:55:38.880+00:00][WARN ][plugins.security.config] Session cookies will be transmitted over insecure connections. This is not recommended.",
+        "[2025-06-29T10:55:38.888+00:00][WARN ][plugins.encryptedSavedObjects] Saved objects encryption key is not set. This will severely limit Kibana functionality. Please set xpack.encryptedSavedObjects.encryptionKey in the kibana.yml or use the bin/kibana-encryption-keys command.",
+        "[2025-06-29T10:55:38.898+00:00][WARN ][plugins.actions] APIs are disabled because the Encrypted Saved Objects plugin is missing encryption key. Please set xpack.encryptedSavedObjects.encryptionKey in the kibana.yml or use the bin/kibana-encryption-keys command.",
+        "[2025-06-29T10:55:38.903+00:00][INFO ][plugins.notifications] Email Service Error: Email connector not specified.",
+        "[2025-06-29T10:55:38.983+00:00][WARN ][plugins.reporting.config] Generating a random key for xpack.reporting.encryptionKey. To prevent sessions from being invalidated on restart, please set xpack.reporting.encryptionKey in the kibana.yml or use the bin/kibana-encryption-keys command.",
+        "[2025-06-29T10:55:38.984+00:00][WARN ][plugins.reporting.config] Found 'server.host: \"0.0.0.0\"' in Kibana configuration. Reporting is not able to use this as the Kibana server hostname. To enable PNG/PDF Reporting to work, 'xpack.reporting.kibanaServer.hostname: localhost' is automatically set in the configuration. You can prevent this message by adding 'xpack.reporting.kibanaServer.hostname: localhost' in kibana.yml.",
+        "[2025-06-29T10:55:38.988+00:00][WARN ][plugins.alerting] APIs are disabled because the Encrypted Saved Objects plugin is missing encryption key. Please set xpack.encryptedSavedObjects.encryptionKey in the kibana.yml or use the bin/kibana-encryption-keys command.",
+        "[2025-06-29T10:55:39.029+00:00][INFO ][plugins.ruleRegistry] Installing common resources shared between all indices",
+        "[2025-06-29T10:55:39.066+00:00][INFO ][plugins.cloudSecurityPosture] Registered task successfully [Task: cloud_security_posture-stats_task]",
+        "[2025-06-29T10:55:39.589+00:00][INFO ][plugins.screenshotting.config] Chromium sandbox provides an additional layer of protection, and is supported for Linux Ubuntu 20.04 OS. Automatically enabling Chromium sandbox.",
+        "[2025-06-29T10:55:39.721+00:00][INFO ][savedobjects-service] Waiting until all Elasticsearch nodes are compatible with Kibana before starting saved objects migrations...",
+        "[2025-06-29T10:55:39.722+00:00][INFO ][savedobjects-service] Starting saved objects migrations",
+        "[2025-06-29T10:55:39.772+00:00][INFO ][savedobjects-service] [.kibana] INIT -> CREATE_NEW_TARGET. took: 31ms.",
+        "[2025-06-29T10:55:39.775+00:00][INFO ][savedobjects-service] [.kibana_task_manager] INIT -> CREATE_NEW_TARGET. took: 28ms.",
+        "[2025-06-29T10:55:40.130+00:00][INFO ][plugins.screenshotting.chromium] Browser executable: /usr/share/kibana/x-pack/plugins/screenshotting/chromium/headless_shell-linux_x64/headless_shell",
+        "[2025-06-29T10:55:40.135+00:00][INFO ][savedobjects-service] [.kibana] CREATE_NEW_TARGET -> MARK_VERSION_INDEX_READY. took: 363ms.",
+        "[2025-06-29T10:55:40.193+00:00][INFO ][savedobjects-service] [.kibana_task_manager] CREATE_NEW_TARGET -> MARK_VERSION_INDEX_READY. took: 418ms.",
+        "[2025-06-29T10:55:40.241+00:00][INFO ][savedobjects-service] [.kibana] MARK_VERSION_INDEX_READY -> DONE. took: 106ms.",
+        "[2025-06-29T10:55:40.241+00:00][INFO ][savedobjects-service] [.kibana] Migration completed after 500ms",
+        "[2025-06-29T10:55:40.290+00:00][INFO ][savedobjects-service] [.kibana_task_manager] MARK_VERSION_INDEX_READY -> DONE. took: 97ms.",
+        "[2025-06-29T10:55:40.290+00:00][INFO ][savedobjects-service] [.kibana_task_manager] Migration completed after 543ms",
+        "[2025-06-29T10:55:40.295+00:00][INFO ][plugins-system.preboot] Stopping all plugins.",
+        "[2025-06-29T10:55:40.296+00:00][INFO ][plugins-system.standard] Starting [127] plugins: [translations,monitoringCollection,licensing,globalSearch,globalSearchProviders,features,mapsEms,licenseApiGuard,usageCollection,taskManager,cloud,guidedOnboarding,telemetryCollectionManager,telemetryCollectionXpack,kibanaUsageCollection,share,screenshotMode,banners,newsfeed,fieldFormats,expressions,screenshotting,dataViews,embeddable,uiActionsEnhanced,charts,esUiShared,customIntegrations,home,searchprofiler,painlessLab,grokdebugger,management,advancedSettings,spaces,security,snapshotRestore,lists,encryptedSavedObjects,telemetry,licenseManagement,files,eventLog,actions,notifications,console,bfetch,data,watcher,reporting,fileUpload,ingestPipelines,alerting,unifiedSearch,unifiedFieldList,savedSearch,savedObjects,graph,savedObjectsTagging,savedObjectsManagement,presentationUtil,expressionShape,expressionRevealImage,expressionRepeatImage,expressionMetric,expressionImage,controls,eventAnnotation,dataViewFieldEditor,triggersActionsUi,transform,stackConnectors,stackAlerts,ruleRegistry,discover,fleet,indexManagement,remoteClusters,crossClusterReplication,indexLifecycleManagement,cloudSecurityPosture,discoverEnhanced,visualizations,canvas,visTypeXy,visTypeVislib,visTypeVega,visTypeTimeseries,rollup,visTypeTimelion,visTypeTagcloud,visTypeTable,visTypeMetric,visTypeHeatmap,visTypeMarkdown,dashboard,dashboardEnhanced,expressionXY,expressionTagcloud,expressionPartitionVis,visTypePie,expressionMetricVis,expressionLegacyMetricVis,expressionHeatmap,expressionGauge,lens,maps,dataVisualizer,cases,timelines,sessionView,kubernetesSecurity,threatIntelligence,osquery,observability,aiops,ml,synthetics,securitySolution,infra,upgradeAssistant,monitoring,logstash,enterpriseSearch,apm,visTypeGauge,dataViewManagement]",
+        "[2025-06-29T10:55:41.352+00:00][INFO ][plugins.fleet] Task Fleet-Usage-Sender-1.1.0 scheduled with interval 1h",
+        "[2025-06-29T10:55:41.378+00:00][INFO ][plugins.monitoring.monitoring] config sourced from: production cluster",
+        "[2025-06-29T10:55:42.807+00:00][INFO ][http.server.Kibana] http server running at http://0.0.0.0:5601",
+        "[2025-06-29T10:55:42.824+00:00][ERROR][plugins.ml] Error Initializing ML saved objects {\"name\":\"ResponseError\",\"meta\":{\"body\":{\"error\":\"Incorrect HTTP method for uri [/_ml/anomaly_detectors] and method [GET], allowed: [POST]\",\"status\":405},\"statusCode\":405,\"headers\":{\"x-opaque-id\":\"unknownId\",\"allow\":\"POST\",\"x-elastic-product\":\"Elasticsearch\",\"content-type\":\"application/json\",\"content-length\":\"113\"},\"meta\":{\"context\":null,\"request\":{\"params\":{\"method\":\"GET\",\"path\":\"/_ml/anomaly_detectors\",\"querystring\":\"\",\"headers\":{\"user-agent\":\"Kibana/8.6.2\",\"x-elastic-product-origin\":\"kibana\",\"x-elastic-client-meta\":\"es=8.4.0p,js=16.18.1,t=8.2.0,hc=16.18.1\",\"x-opaque-id\":\"unknownId\",\"accept\":\"application/vnd.elasticsearch+json; compatible-with=8,text/plain\"}},\"options\":{\"opaqueId\":\"unknownId\",\"headers\":{\"x-elastic-product-origin\":\"kibana\",\"user-agent\":\"Kibana/8.6.2\",\"x-elastic-client-meta\":\"es=8.4.0p,js=16.18.1,t=8.2.0,hc=16.18.1\"}},\"id\":7},\"name\":\"elasticsearch-js\",\"connection\":{\"url\":\"http://192.168.30.10:9200/\",\"id\":\"http://192.168.30.10:9200/\",\"headers\":{},\"status\":\"alive\"},\"attempts\":0,\"aborted\":false},\"warnings\":null}}",
+        "[2025-06-29T10:55:42.863+00:00][INFO ][plugins.monitoring.monitoring.kibana-monitoring] Starting monitoring stats collection",
+        "[2025-06-29T10:55:42.954+00:00][INFO ][status] Kibana is now degraded",
+        "[2025-06-29T10:55:43.004+00:00][INFO ][plugins.fleet] Task Fleet-Usage-Logger-Task scheduled with interval 15m",
+        "[2025-06-29T10:55:43.387+00:00][INFO ][plugins.ml] Task ML:saved-objects-sync-task: scheduled with interval 1h",
+        "[2025-06-29T10:55:43.613+00:00][INFO ][plugins.ruleRegistry] Installed common resources shared between all indices",
+        "[2025-06-29T10:55:43.613+00:00][INFO ][plugins.ruleRegistry] Installing resources for index .alerts-observability.uptime.alerts",
+        "[2025-06-29T10:55:43.614+00:00][INFO ][plugins.ruleRegistry] Installing resources for index .alerts-security.alerts",
+        "[2025-06-29T10:55:43.614+00:00][INFO ][plugins.ruleRegistry] Installing resources for index .preview.alerts-security.alerts",
+        "[2025-06-29T10:55:43.614+00:00][INFO ][plugins.ruleRegistry] Installing resources for index .alerts-observability.logs.alerts",
+        "[2025-06-29T10:55:43.614+00:00][INFO ][plugins.ruleRegistry] Installing resources for index .alerts-observability.metrics.alerts",
+        "[2025-06-29T10:55:43.615+00:00][INFO ][plugins.ruleRegistry] Installing resources for index .alerts-observability.apm.alerts",
+        "[2025-06-29T10:55:43.766+00:00][INFO ][plugins.ruleRegistry] Installed resources for index .alerts-observability.uptime.alerts",
+        "[2025-06-29T10:55:43.767+00:00][INFO ][plugins.ruleRegistry] Installed resources for index .alerts-observability.apm.alerts",
+        "[2025-06-29T10:55:43.768+00:00][INFO ][plugins.ruleRegistry] Installed resources for index .alerts-observability.metrics.alerts",
+        "[2025-06-29T10:55:43.768+00:00][INFO ][plugins.ruleRegistry] Installed resources for index .alerts-observability.logs.alerts",
+        "[2025-06-29T10:55:43.768+00:00][INFO ][plugins.ruleRegistry] Installed resources for index .alerts-security.alerts",
+        "[2025-06-29T10:55:43.952+00:00][INFO ][plugins.ruleRegistry] Installed resources for index .preview.alerts-security.alerts",
+        "[2025-06-29T10:55:46.209+00:00][INFO ][plugins.fleet] Running Fleet Usage telemetry send task",
+        "[2025-06-29T10:55:49.081+00:00][INFO ][plugins.securitySolution.endpoint:metadata-check-transforms-task:0.0.1] no endpoint installation found",
+        "[2025-06-29T10:55:49.120+00:00][INFO ][plugins.fleet] Fleet Usage: {\"agents_enabled\":true,\"agents\":{\"total_enrolled\":0,\"healthy\":0,\"unhealthy\":0,\"offline\":0,\"total_all_statuses\":0,\"updating\":0},\"fleet_server\":{\"total_all_statuses\":0,\"total_enrolled\":0,\"healthy\":0,\"unhealthy\":0,\"offline\":0,\"updating\":0,\"num_host_urls\":0}}",
+        "[2025-06-29T10:55:49.212+00:00][ERROR][plugins.taskManager] Task apm-telemetry-task \"apm-telemetry-task\" failed: TypeError: Cannot read properties of undefined (reading 'logger')",
+        "[2025-06-29T10:55:51.569+00:00][INFO ][status] Kibana is now available (was degraded)",
+        "[2025-06-29T10:55:51.591+00:00][INFO ][plugins.reporting.store] Creating ILM policy for managing reporting indices: kibana-reporting",
+        "[2025-06-29T10:55:51.952+00:00][ERROR][plugins.taskManager] Task ML:saved-objects-sync \"ML:saved-objects-sync-task\" failed: ResponseError: {\"error\":\"Incorrect HTTP method for uri [/_ml/anomaly_detectors] and method [GET], allowed: [POST]\",\"status\":405}"
+    ]
+}
+
+TASK [node_exporter : download node exporter] ****************************************************************************************************
+changed: [kibana-host]
+
+TASK [node_exporter : unarchive node exporter] ***************************************************************************************************
+changed: [kibana-host]
+
+TASK [node_exporter : move node exporter to /usr/local/bin] **************************************************************************************
+changed: [kibana-host]
+
+TASK [node_exporter : install unit file to systemd] **********************************************************************************************
+changed: [kibana-host]
+
+TASK [node_exporter : start node_exporter handlers] **********************************************************************************************
+
+RUNNING HANDLER [kibana : docker systemd] ********************************************************************************************************
+ok: [kibana-host]
+
+RUNNING HANDLER [node_exporter : node exporter systemd] ******************************************************************************************
+changed: [kibana-host]
+
+TASK [node_exporter : start node_exporter] *******************************************************************************************************
+ok: [kibana-host]
+
+TASK [node_exporter : Return service state information as fact data] *****************************************************************************
+ok: [kibana-host]
+
+TASK [node_exporter : Show the status of node_exporter service] **********************************************************************************
+ok: [kibana-host] => {
+    "ansible_facts.services['node_exporter.service']['state']": "running"
+}
+
+PLAY RECAP ***************************************************************************************************************************************
+elasticsearch-host         : ok=26   changed=17   unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
+kibana-host                : ok=23   changed=14   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+pl4ntexz@PL4NTEXZ-LT:~/hw_sdn/nt-sys-dip/ansible$

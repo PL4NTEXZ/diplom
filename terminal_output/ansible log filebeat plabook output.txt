@@ -1,0 +1,55 @@
+pl4ntexz@PL4NTEXZ-LT:~/hw_sdn/nt-sys-dip/ansible$ ansible-playbook log-filebeat-playbook.yml -i host.ini
+/usr/lib/python3/dist-packages/requests/__init__.py:87: RequestsDependencyWarning: urllib3 (1.26.5) or chardet (5.2.0) doesn't match a supported version!
+  warnings.warn("urllib3 ({}) or chardet ({}) doesn't match a supported "
+
+PLAY [webservers] ********************************************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************************************************
+[WARNING]: Platform linux on host web2 is using the discovered Python interpreter at /usr/bin/python3.10, but future installation of another
+Python interpreter could change the meaning of that path. See https://docs.ansible.com/ansible-
+core/2.17/reference_appendices/interpreter_discovery.html for more information.
+ok: [web2]
+[WARNING]: Platform linux on host web1 is using the discovered Python interpreter at /usr/bin/python3.10, but future installation of another
+Python interpreter could change the meaning of that path. See https://docs.ansible.com/ansible-
+core/2.17/reference_appendices/interpreter_discovery.html for more information.
+ok: [web1]
+
+TASK [filebeat : copy filebeat.deb] **************************************************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [filebeat : install filebeat] ***************************************************************************************************************
+changed: [web2]
+changed: [web1]
+
+TASK [filebeat : replace config file] ************************************************************************************************************
+changed: [web2]
+changed: [web1]
+
+TASK [filebeat : setup filebeat] *****************************************************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [filebeat : start filebeat] *****************************************************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [filebeat : Return service state information as fact data] **********************************************************************************
+ok: [web1]
+ok: [web2]
+
+TASK [filebeat : Show the status of filebeat service] ********************************************************************************************
+ok: [web1] => {
+    "ansible_facts.services['filebeat.service']['state']": "running"
+}
+ok: [web2] => {
+    "ansible_facts.services['filebeat.service']['state']": "running"
+}
+
+RUNNING HANDLER [filebeat : enable filebeat] *****************************************************************************************************
+ok: [web1]
+ok: [web2]
+
+PLAY RECAP ***************************************************************************************************************************************
+web1                       : ok=9    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+web2                       : ok=9    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0

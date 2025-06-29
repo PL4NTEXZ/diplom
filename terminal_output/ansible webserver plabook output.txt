@@ -1,0 +1,141 @@
+pl4ntexz@PL4NTEXZ-LT:~/hw_sdn/nt-sys-dip/ansible$ ansible-playbook webservers-playbook.yml -i host.ini
+/usr/lib/python3/dist-packages/requests/__init__.py:87: RequestsDependencyWarning: urllib3 (1.26.5) or chardet (5.2.0) doesn't match a supported version!
+  warnings.warn("urllib3 ({}) or chardet ({}) doesn't match a supported "
+
+PLAY [webservers] ********************************************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************************************************
+[WARNING]: Platform linux on host web2 is using the discovered Python interpreter at /usr/bin/python3.10, but future installation of another
+Python interpreter could change the meaning of that path. See https://docs.ansible.com/ansible-
+core/2.17/reference_appendices/interpreter_discovery.html for more information.
+ok: [web2]
+[WARNING]: Platform linux on host web1 is using the discovered Python interpreter at /usr/bin/python3.10, but future installation of another
+Python interpreter could change the meaning of that path. See https://docs.ansible.com/ansible-
+core/2.17/reference_appendices/interpreter_discovery.html for more information.
+ok: [web1]
+
+TASK [nginx : Update apt cache] ******************************************************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [nginx : install nginx] *********************************************************************************************************************
+changed: [web2]
+changed: [web1]
+
+TASK [nginx : copy website files] ****************************************************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [nginx : replace nginx config] **************************************************************************************************************
+changed: [web2]
+changed: [web1]
+
+TASK [nginx : start nginx handlers] **************************************************************************************************************
+
+TASK [nginx : start nginx handlers] **************************************************************************************************************
+
+RUNNING HANDLER [nginx : restart nginx] **********************************************************************************************************
+changed: [web2]
+changed: [web1]
+
+RUNNING HANDLER [nginx : nginx systemd] **********************************************************************************************************
+ok: [web1]
+ok: [web2]
+
+TASK [nginx : Return service state information as fact data] *************************************************************************************
+ok: [web1]
+ok: [web2]
+
+TASK [nginx : Show the status of nginx service] **************************************************************************************************
+ok: [web1] => {
+    "ansible_facts.services['nginx.service']['state']": "running"
+}
+ok: [web2] => {
+    "ansible_facts.services['nginx.service']['state']": "running"
+}
+
+TASK [node_exporter : download node exporter] ****************************************************************************************************
+changed: [web2]
+changed: [web1]
+
+TASK [node_exporter : unarchive node exporter] ***************************************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [node_exporter : move node exporter to /usr/local/bin] **************************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [node_exporter : install unit file to systemd] **********************************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [node_exporter : start node_exporter handlers] **********************************************************************************************
+
+TASK [node_exporter : start node_exporter handlers] **********************************************************************************************
+
+RUNNING HANDLER [node_exporter : node exporter systemd] ******************************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [node_exporter : start node_exporter] *******************************************************************************************************
+ok: [web1]
+ok: [web2]
+
+TASK [node_exporter : Return service state information as fact data] *****************************************************************************
+ok: [web1]
+ok: [web2]
+
+TASK [node_exporter : Show the status of node_exporter service] **********************************************************************************
+ok: [web1] => {
+    "ansible_facts.services['node_exporter.service']['state']": "running"
+}
+ok: [web2] => {
+    "ansible_facts.services['node_exporter.service']['state']": "running"
+}
+
+TASK [nginx_logexporter : download nginx log exporter] *******************************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [nginx_logexporter : unarchive nginx log exporter] ******************************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [nginx_logexporter : move nginx log exporter to /usr/bin] ***********************************************************************************
+changed: [web2]
+changed: [web1]
+
+TASK [nginx_logexporter : copy  nginx log exporter config] ***************************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [nginx_logexporter : install unit file to systemd] ******************************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [nginx_logexporter : start prometheus-nginxlog-exporter handlers] ***************************************************************************
+
+TASK [nginx_logexporter : start prometheus-nginxlog-exporter handlers] ***************************************************************************
+
+RUNNING HANDLER [nginx_logexporter : nginxlog-exporter systemd] **********************************************************************************
+changed: [web1]
+changed: [web2]
+
+TASK [nginx_logexporter : Return service state information as fact data] *************************************************************************
+ok: [web1]
+ok: [web2]
+
+TASK [nginx_logexporter : Show the status of nginxlog-exporter service] **************************************************************************
+ok: [web1] => {
+    "ansible_facts.services['prometheus-nginxlog-exporter.service']['state']": "running"
+}
+ok: [web2] => {
+    "ansible_facts.services['prometheus-nginxlog-exporter.service']['state']": "running"
+}
+
+PLAY RECAP ***************************************************************************************************************************************
+web1                       : ok=25   changed=16   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+web2                       : ok=25   changed=16   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+pl4ntexz@PL4NTEXZ-LT:~/hw_sdn/nt-sys-dip/ansible$

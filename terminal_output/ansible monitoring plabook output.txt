@@ -1,0 +1,111 @@
+pl4ntexz@PL4NTEXZ-LT:~/hw_sdn/nt-sys-dip/ansible$ ansible-playbook monitoring-playbook.yml
+/usr/lib/python3/dist-packages/requests/__init__.py:87: RequestsDependencyWarning: urllib3 (1.26.5) or chardet (5.2.0) doesn't match a supported version!
+  warnings.warn("urllib3 ({}) or chardet ({}) doesn't match a supported "
+
+PLAY [prometheus] ********************************************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************************************************
+[WARNING]: Platform linux on host prometheus-host is using the discovered Python interpreter at /usr/bin/python3.10, but future installation of
+another Python interpreter could change the meaning of that path. See https://docs.ansible.com/ansible-
+core/2.17/reference_appendices/interpreter_discovery.html for more information.
+ok: [prometheus-host]
+
+TASK [prometheus : Update apt cache] *************************************************************************************************************
+changed: [prometheus-host]
+
+TASK [prometheus : install prometheus] ***********************************************************************************************************
+ok: [prometheus-host]
+
+TASK [prometheus : replace prometheus config] ****************************************************************************************************
+ok: [prometheus-host]
+
+TASK [prometheus : copy record rules] ************************************************************************************************************
+ok: [prometheus-host]
+
+TASK [prometheus : Return service state information as fact data] ********************************************************************************
+ok: [prometheus-host]
+
+TASK [prometheus : Show the status of prometheus service] ****************************************************************************************
+ok: [prometheus-host] => {
+    "ansible_facts.services['prometheus.service']['state']": "running"
+}
+
+PLAY [grafana] ***********************************************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************************************************
+[WARNING]: Platform linux on host grafana-host is using the discovered Python interpreter at /usr/bin/python3.10, but future installation of
+another Python interpreter could change the meaning of that path. See https://docs.ansible.com/ansible-
+core/2.17/reference_appendices/interpreter_discovery.html for more information.
+ok: [grafana-host]
+
+TASK [grafana : Update apt cache] ****************************************************************************************************************
+changed: [grafana-host]
+
+TASK [grafana : install libfontconfig1] **********************************************************************************************************
+ok: [grafana-host]
+
+TASK [grafana : copy grafana-enterprise_10.0.3_amd64.deb] ****************************************************************************************
+ok: [grafana-host]
+
+TASK [grafana : install grafana] *****************************************************************************************************************
+ok: [grafana-host]
+
+TASK [grafana : start handlers] ******************************************************************************************************************
+
+TASK [grafana : copy grafana datasource config] **************************************************************************************************
+ok: [grafana-host]
+
+TASK [grafana : copy grafana dashboard] **********************************************************************************************************
+ok: [grafana-host]
+
+TASK [grafana : Wait for Grafana API to be ready] ************************************************************************************************
+ok: [grafana-host]
+
+TASK [grafana : import dashboard NGINX Servers Metrics] ******************************************************************************************
+changed: [grafana-host]
+
+TASK [grafana : import dashboard dashboard Node Exporter Full] ***********************************************************************************
+changed: [grafana-host]
+
+TASK [grafana : Return service state information as fact data] ***********************************************************************************
+ok: [grafana-host]
+
+TASK [grafana : Show the status of grafana service] **********************************************************************************************
+ok: [grafana-host] => {
+    "ansible_facts.services['grafana.service']['state']": "VARIABLE IS NOT DEFINED!"
+}
+
+TASK [node_exporter : download node exporter] ****************************************************************************************************
+changed: [grafana-host]
+
+TASK [node_exporter : unarchive node exporter] ***************************************************************************************************
+changed: [grafana-host]
+
+TASK [node_exporter : move node exporter to /usr/local/bin] **************************************************************************************
+changed: [grafana-host]
+
+TASK [node_exporter : install unit file to systemd] **********************************************************************************************
+changed: [grafana-host]
+
+TASK [node_exporter : start node_exporter handlers] **********************************************************************************************
+
+RUNNING HANDLER [grafana : enable grafana] *******************************************************************************************************
+changed: [grafana-host]
+
+RUNNING HANDLER [node_exporter : node exporter systemd] ******************************************************************************************
+changed: [grafana-host]
+
+TASK [node_exporter : start node_exporter] *******************************************************************************************************
+ok: [grafana-host]
+
+TASK [node_exporter : Return service state information as fact data] *****************************************************************************
+ok: [grafana-host]
+
+TASK [node_exporter : Show the status of node_exporter service] **********************************************************************************
+ok: [grafana-host] => {
+    "ansible_facts.services['node_exporter.service']['state']": "running"
+}
+
+PLAY RECAP ***************************************************************************************************************************************
+grafana-host               : ok=21   changed=9    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+prometheus-host            : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
